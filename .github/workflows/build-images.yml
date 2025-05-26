@@ -1,0 +1,63 @@
+name: Build and Push Images to Registry
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*-p2p'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  REPOSITORY: ${{ github.repository }}
+
+jobs:
+  build-and-push-image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - image_name: masp-indexer
+            package: masp-indexer
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata for Docker
+        id: meta
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          else
+            echo "version=latest" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            PACKAGE=${{ matrix.package }}
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY }}/${{ matrix.image_name }}:${{ steps.meta.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
