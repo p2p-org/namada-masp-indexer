@@ -27,9 +27,9 @@ fi
 echo "Creating new branch from $VERSION..."
 git checkout -b $BRANCH_NAME $VERSION
 
-# Copy the workflow file from main
-echo "Copying workflow file from main..."
-git checkout main -- .github/workflows/build-images.yml
+# Copy the workflow file from master
+echo "Copying workflow file from master..."
+git checkout master -- .github/workflows/build-images.yml
 git add .github/workflows/build-images.yml
 git commit -m "Add build-images workflow for p2p tag"
 
@@ -61,4 +61,4 @@ else
 fi
 
 # Return to original branch
-git checkout main
+git checkout master
