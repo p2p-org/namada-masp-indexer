@@ -3,7 +3,7 @@ name: Build and Push Images to Registry
 on:
   push:
     branches:
-      - '**'
+      - master
     tags:
       - 'v*.*.*'
       - 'v*.*.*-p2p'
