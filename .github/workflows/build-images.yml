@@ -24,7 +24,7 @@ jobs:
       matrix:
         include:
           - image_name: masp-indexer
-            package: masp-indexer
+            package: webserver
 
     steps:
       - name: Checkout repository
