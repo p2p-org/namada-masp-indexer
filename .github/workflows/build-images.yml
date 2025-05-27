@@ -3,7 +3,7 @@ name: Build and Push Images to Registry
 on:
   push:
     branches:
-      - master
+      - '*'
     tags:
       - 'v*.*.*'
       - 'v*.*.*-p2p'
@@ -23,8 +23,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - image_name: masp-indexer
+          - image_name: block-index
+            package: block-index
+          - image_name: webserver
             package: webserver
+          - image_name: crawler
+            package: crawler
 
     steps:
       - name: Checkout repository
