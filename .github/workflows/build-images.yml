@@ -24,16 +24,10 @@ jobs:
       matrix:
         include:
           - image_name: block-index
-            context: block-index
-            file: block-index/Dockerfile
             package: block-index
           - image_name: webserver
-            context: webserver
-            file: webserver/Dockerfile
             package: webserver
           - image_name: crawler
-            context: chain
-            file: chain/Dockerfile
             package: crawler
 
     steps:
@@ -63,8 +57,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.context }}
-          file: ${{ matrix.file }}
+          context: .
+          file: Dockerfile
           build-args: |
             PACKAGE=${{ matrix.package }}
           push: true
