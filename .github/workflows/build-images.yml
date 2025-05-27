@@ -33,7 +33,7 @@ jobs:
             package: webserver
           - image_name: crawler
             context: crawler
-            file: crawler/Dockerfile
+            file: chain/Dockerfile
             package: crawler
 
     steps:
